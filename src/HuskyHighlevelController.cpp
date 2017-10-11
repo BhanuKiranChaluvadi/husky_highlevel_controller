@@ -13,7 +13,13 @@ namespace husky_highlevel_controller {
 HuskyHighlevelController::HuskyHighlevelController(ros::NodeHandle& nodeHandle): nodeHandle_(nodeHandle)
 {
 	// TODO Auto-generated constructor stub
-	subscriber_ = nodeHandle.subscribe("/scan", 10, &HuskyHighlevelController::subscriberCallback, this);
+	if (!nodeHandle_.getParam("/husky_highlevel_controller/scan_subscriber_queue_size", queue_size))
+		ROS_ERROR("Failed to get param 'scan_subscriber_queue_size'");
+
+	if (!nodeHandle_.getParam("/husky_highlevel_controller/scan_subscriber_topic_name", topic_name))
+		ROS_ERROR("Failed to get param 'scan_subscriber_topic_name'");
+
+	subscriber_ = nodeHandle.subscribe(topic_name, queue_size, &HuskyHighlevelController::subscriberCallback, this);
 
 }
 
@@ -29,7 +35,7 @@ void HuskyHighlevelController::subscriberCallback(const sensor_msgs::LaserScan::
 	float smallestValue;
 	std::vector<float> laserScanData = laserScan->ranges;
 	smallestValue = *std::min_element(laserScanData.begin(), laserScanData.end());
-	ROS_INFO(" Smallest distance measurement :[%f]", smallestValue);
+	ROS_INFO("smallest distance measurement: %f", smallestValue);
 }
 
 } /* name space husky_highlevel_controller */

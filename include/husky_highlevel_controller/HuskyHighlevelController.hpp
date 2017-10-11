@@ -8,6 +8,7 @@
 #pragma once
 
 #include <ros/ros.h>
+#include <string>
 #include <sensor_msgs/LaserScan.h>
 
 namespace husky_highlevel_controller {
@@ -21,12 +22,14 @@ public:
 
 	void subscriberCallback(const sensor_msgs::LaserScan::ConstPtr& laserScan);
 
-	void subscribe();
 
 
 private:
 	ros::NodeHandle nodeHandle_;
 	ros::Subscriber subscriber_;
+
+	int queue_size;
+	std::string topic_name;
 };
 
 } /* name space husky_highlevel_controller */
