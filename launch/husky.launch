@@ -18,5 +18,7 @@ Software License Agreement (BSD)
     <rosparam command = "load" file= "$(find husky_highlevel_controller)/param/parameters.yaml" />
     <remap from="/husky_highlevel_controller/" to="/"/>
   </node>	
-	
+
+ <node name = "my_rviz" pkg="rviz" type="rviz" args = "-d $(find husky_highlevel_controller)/rvizConfig/config.rviz" />
+ 
 </launch>
