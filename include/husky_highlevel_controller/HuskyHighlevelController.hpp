@@ -11,6 +11,7 @@
 #include <string>
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/Twist.h>
+#include <visualization_msgs/Marker.h>
 
 namespace husky_highlevel_controller {
 
@@ -25,17 +26,27 @@ public:
 
 	void publishMessage(ros::Publisher *pub_message);
 
+	void default_Viz_marker_config();
+
 
 
 private:
+	// node handle
 	ros::NodeHandle nodeHandle_;
+
+	// publishers or subscribers
 	ros::Subscriber subscriber_;
 	ros::Publisher publisher_;
+	ros::Publisher vis_pub;
 
+	// parameters - read from parameter file
 	int queue_size;
 	std::string topic_name;
 
+	// published message
 	geometry_msgs::Twist twist_;
+	visualization_msgs::Marker marker_;
+
 
 };
 
