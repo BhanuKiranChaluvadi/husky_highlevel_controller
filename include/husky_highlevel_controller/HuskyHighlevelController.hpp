@@ -12,6 +12,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/Twist.h>
 #include <visualization_msgs/Marker.h>
+#include <geometry_msgs/PointStamped.h>
 
 namespace husky_highlevel_controller {
 
@@ -25,10 +26,6 @@ public:
 	void subscriberCallback(const sensor_msgs::LaserScan::ConstPtr& laserScan);
 
 	void publishMessage(ros::Publisher *pub_message);
-
-	void default_Viz_marker_config();
-
-
 
 private:
 	// node handle
@@ -45,7 +42,7 @@ private:
 
 	// published message
 	geometry_msgs::Twist twist_;
-	visualization_msgs::Marker marker_;
+	geometry_msgs::PointStamped closestPt_;
 
 
 };
