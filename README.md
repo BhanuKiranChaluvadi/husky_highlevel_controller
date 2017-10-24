@@ -8,8 +8,9 @@ This is solution for exercise4 from Programming for Robotics - ROS by ETH Zurich
 
 
 2. Run:
-	1. Terminal : > roslaunch husky_highlevel_controller localization.launch
-	2. Hit play button on rqt_mutiplot panel
+	1. Update ROS bag file path in localization.launch with your local repository.
+	2. Terminal : > roslaunch husky_highlevel_controller localization.launch
+	3. Hit play button on rqt_mutiplot panel
 
 
 3. Functionality: 
