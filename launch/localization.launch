@@ -13,6 +13,10 @@ Software License Agreement (BSD)
 	<arg name="kinect_enabled" default="false"/>
 
 	<arg name="husky_gazebo_description" default="$(optenv HUSKY_GAZEBO_DESCRIPTION)"/>
+	
+	
+	<arg name="path" default="../Downloads/ROS_eth/" />
+	<arg name="rosbag_name" default="husky_navigation" />
 
 	<param name="robot_description" command="$(find xacro)/xacro.py '$(arg husky_gazebo_description)'
 	laser_enabled:=$(arg laser_enabled)
@@ -25,9 +29,13 @@ Software License Agreement (BSD)
 	<node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
 		<rosparam command="load" file="$(find husky_control)/config/localization.yaml" />
 	</node>
+	
+	<node pkg="rosbag" type="play" name="player" output="screen" args="--clock $(arg path)$(arg rosbag_name).bag"/>
 
 	<node name = "my_rviz" pkg="rviz" type="rviz" args = "-d $(find husky_highlevel_controller)/rvizConfig/localization.rviz" />
 
-	<node pkg="rqt_multiplot" type="rqt_multiplot" name="rqt_multiplot" />
+	<node pkg="rqt_multiplot" type="rqt_multiplot" name="rqt_multiplot" args = " --multiplot-config $(find husky_highlevel_controller)/rqtMultiplotConfig/husky_XYpose.xml" />
+	
+	
   
 </launch>
