@@ -1,32 +1,17 @@
 
+This is solution for exercise4 from Programming for Robotics - ROS by ETH Zurich(http://www.rsl.ethz.ch/education-students/lectures/ros.html)
 
+1. Dependencies: 
+	1. Rviz
+	2. rqt_multiplot
 
-# husky_highlevel_controller
-This package is a part of exercise-2 from Programming for Robotics - ROS by ETH Zurich
-URL: http://www.rsl.ethz.ch/education-students/lectures/ros.html
-     https://www.ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/ROS2017/exercise2.pdf
+2. Run:
+	1. Terminal 1: > roslaunch husky_highlevel_controller localization.launch
+	2. In rqt_multiplot load configuration from rqtMultiplotConfig/rqt_multiplot.xml
+	3. Terminal 2: 
+		a. Navigate to husky_navigation.bag (downloaded from http://www.rsl.ethz.ch/education-students/lectures/ros.html)
+		b. > rosbag run husky_navigation.bag --clock
 
-# Dependency
-pkg: teleop_twist_keyboard
-Clone: https://github.com/ros-teleop/teleop_twist_keyboard.git
-This package reads from the keyboard  and Publishing to Twist! GO through teleop_twist_keyboard README.md for more details on keyboard keys to operate husky robot.
-
-pkg: husky_gazebo
-URL: http://wiki.ros.org/husky_gazebo/Tutorials/Simulating%20Husky
-Follow the instructions in the url to setup husky package
-
-
-# Launch
-roslaunch husky_highlevel_controller husky.launch 
-
-# Major nodes launched
-	1. gazebo
-	2. husky_gazebo
-	3. teleop_twist_keyboard 
-	4. rosviz
-
-# quit
-CTRL-C
 
 
 
