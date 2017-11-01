@@ -11,17 +11,10 @@ Software License Agreement (BSD)
     <arg name="laser_enabled" value="true"/>
   </include>
   
-  <!--
-  <node pkg="teleop_twist_keyboard" name="teleOp" type="teleop_twist_keyboard.py">
-    <remap from="/" to="husky_velocity_controller"/>
-  </node>
-  -->
-  
-  <node name = "husky_highlevel_controller" pkg="husky_highlevel_controller" type="husky_highlevel_controller" output="screen" >
+  <node pkg="husky_highlevel_controller" type="husky_highlevel_controller" name = "husky_highlevel_controller" output="screen" >
     <rosparam command = "load" file= "$(find husky_highlevel_controller)/param/parameters.yaml" />
-    <remap from="/husky_highlevel_controller/" to="/"/>
-  </node>	
+  </node>
 
-  <node name = "my_rviz" pkg="rviz" type="rviz" args = "-d $(find husky_highlevel_controller)/rvizConfig/config.rviz" />
+  <node pkg="rviz" type="rviz" name = "my_rviz" args = "-d $(find husky_highlevel_controller)/rvizConfig/config.rviz" />
 
 </launch>

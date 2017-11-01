@@ -6,6 +6,8 @@
  */
 
 #include "husky_highlevel_controller/HuskyHighlevelController.hpp"
+
+// STD
 #include <algorithm>
 #include <math.h>
 
@@ -13,27 +15,44 @@ namespace husky_highlevel_controller {
 
 HuskyHighlevelController::HuskyHighlevelController(ros::NodeHandle& nodeHandle): nodeHandle_(nodeHandle)
 {
-	// Read parameters from the parameter file.
-	if (!nodeHandle_.getParam("/husky_highlevel_controller/scan_subscriber_queue_size", queue_size))
-		ROS_ERROR("Failed to get param 'scan_subscriber_queue_size'");
+	if (!readParameters()) {
+		ROS_ERROR("Could not read parameters.");
+		ros::requestShutdown();
+	}
 
-	if (!nodeHandle_.getParam("/husky_highlevel_controller/scan_subscriber_topic_name", topic_name))
-		ROS_ERROR("Failed to get param 'scan_subscriber_topic_name'");
+
 
 	// Elements in srv or msg definition are assigned zero values by the default
 	// no need to assign rest of the values as 0.0
-	twist_.linear.x = 2.0;
+	twist_.linear.x = 3.0;
 	default_Viz_marker_config();
 
 	// initialize publishers and subscribers
-	subscriber_ = nodeHandle.subscribe(topic_name, queue_size, &HuskyHighlevelController::subscriberCallback, this);
-	publisher_ = nodeHandle.advertise <geometry_msgs::Twist> ("/cmd_vel", 10);
-	vis_pub = nodeHandle.advertise <visualization_msgs::Marker> ("visualization_marker", 0 );
+	subscriber_ = nodeHandle_.subscribe(subscriberTopic_, subscriberQueuesize_,
+											&HuskyHighlevelController::subscriberCallback, this);
+
+	serviceServer_ = nodeHandle_.advertiseService("run",
+	                                                &HuskyHighlevelController::serviceCallback, this);
+
+	publisher_ = nodeHandle_.advertise <geometry_msgs::Twist> ("/cmd_vel", 10);
+
+	vis_pub = nodeHandle_.advertise <visualization_msgs::Marker> ("visualization_marker", 0 );
+
+	ROS_INFO("Successfully launched node.");
 }
 
 HuskyHighlevelController::~HuskyHighlevelController()
 {
 	// TODO Auto-generated destructor stub
+}
+
+
+bool HuskyHighlevelController::readParameters()
+{
+	if (!nodeHandle_.getParam("subscriber_queue_size", subscriberQueuesize_) ||
+			!nodeHandle_.getParam("subscriber_topic", subscriberTopic_))  return false;
+
+	return true;
 }
 
 void HuskyHighlevelController::subscriberCallback(const sensor_msgs::LaserScan::ConstPtr& laserScan)
@@ -62,6 +81,13 @@ void HuskyHighlevelController::subscriberCallback(const sensor_msgs::LaserScan::
 
 }
 
+bool HuskyHighlevelController::serviceCallback(std_srvs::SetBool::Request& request,
+  	  	  	  	  	  	  	  	  	  	  	  	  std_srvs::SetBool::Response& response)
+{
+	response.success = true;
+	response.message = "The process is running: " + std::to_string(request.data);
+	return true;
+}
 
 void HuskyHighlevelController::default_Viz_marker_config()
 {

@@ -242,7 +242,7 @@ Visualization Manager:
       Visual Enabled: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: husky_highlevel_controller/visualization_marker
+      Marker Topic: visualization_marker
       Name: Marker
       Namespaces:
         husky_highlevel_controller: true

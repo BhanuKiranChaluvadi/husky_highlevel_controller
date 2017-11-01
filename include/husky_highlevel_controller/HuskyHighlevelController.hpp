@@ -12,42 +12,83 @@
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/Twist.h>
 #include <visualization_msgs/Marker.h>
+#include <std_srvs/SetBool.h>
 
 namespace husky_highlevel_controller {
 
-class HuskyHighlevelController {
+/*!
+ * Main class for the node to handle the ROS interfacing.
+ */
+class HuskyHighlevelController
+{
 public:
 
+	/*!
+	 * Constructor.
+	 * @param nodeHandle the ROS node handle.
+	 */
 	HuskyHighlevelController(ros::NodeHandle& nodeHandle);
 
+	/*!
+	 * Destructor.
+	 */
 	virtual ~HuskyHighlevelController();
 
+private:
+
+	/*!
+	 * Reads and verifies the ROS parameters.
+	 * @return true if successful.
+	 */
+	bool readParameters();
+
+	/*!
+	 * ROS topic callback method.
+	 * @param laserScan the received message.
+	 * subscribes to topic: laserScan data and publish to a topic: cmd_vel
+	 */
 	void subscriberCallback(const sensor_msgs::LaserScan::ConstPtr& laserScan);
 
-	void publishMessage(ros::Publisher *pub_message);
 
+	/*!
+	 * Initialize the visualization marker topic with default parameters
+	 * Elements in srv or msg definition are assigned zero values by the default
+	 * no need to assign rest of the values as 0.0
+	 */
 	void default_Viz_marker_config();
 
+	/*!
+	 * ROS service server callback.
+	 * @param request the request of the service.
+	 * @param response the provided response.
+	 * @return true if successful, false otherwise.
+	 */
 
+	bool serviceCallback(std_srvs::SetBool::Request& request,
+			  	  	  	  std_srvs::SetBool::Response& response);
 
-private:
-	// node handle
+	//! ROS node handle.
 	ros::NodeHandle nodeHandle_;
 
-	// publishers or subscribers
+	//! ROS topic subscriber.
 	ros::Subscriber subscriber_;
+
+	//! ROS service server.
+	ros::ServiceServer serviceServer_;
+
+	//! ROS topic publisher - publish to /cmd_vel of husky.
 	ros::Publisher publisher_;
+
+	//! ROS topic publisher - publish to visualize marker in rViz
 	ros::Publisher vis_pub;
 
-	// parameters - read from parameter file
-	int queue_size;
-	std::string topic_name;
-
-	// published message
+	//! ROS messages to be publisher.
 	geometry_msgs::Twist twist_;
 	visualization_msgs::Marker marker_;
 
-
+	//! ROS topic name to subscribe to and queue size
+	std::string subscriberTopic_;
+	int subscriberQueuesize_;
 };
 
 } /* name space husky_highlevel_controller */
