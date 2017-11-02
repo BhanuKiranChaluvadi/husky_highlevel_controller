@@ -16,34 +16,59 @@
 
 namespace husky_highlevel_controller {
 
-class HuskyHighlevelController {
+/*!
+ * Main class for the node to handle the ROS interfacing.
+ */
+class HuskyHighlevelController
+{
 public:
 
+	/*!
+	 * Constructor.
+	 * @param nodeHandle the ROS node handle.
+	 */
 	HuskyHighlevelController(ros::NodeHandle& nodeHandle);
 
+	/*!
+	 * Destructor.
+	 */
 	virtual ~HuskyHighlevelController();
 
+private:
+
+	/*!
+	 * Reads and verifies the ROS parameters.
+	 * @return true if successful.
+	 */
+	bool readParameters();
+
+	/*!
+	 * ROS topic callback method.
+	 * @param laserScan the received message.
+	 * subscribes to topic: laserScan data and publish to a topic: cmd_vel
+	 */
 	void subscriberCallback(const sensor_msgs::LaserScan::ConstPtr& laserScan);
 
-	void publishMessage(ros::Publisher *pub_message);
-
-private:
-	// node handle
+	//! ROS node handle.
 	ros::NodeHandle nodeHandle_;
 
-	// publishers or subscribers
+	//! ROS topic subscriber.
 	ros::Subscriber subscriber_;
+
+	//! ROS topic publisher - publish to /cmd_vel of husky.
 	ros::Publisher publisher_;
+
+	//! ROS topic publisher - publish to visualize marker in rViz
 	ros::Publisher vis_pub;
 
-	// parameters - read from parameter file
-	int queue_size;
-	std::string topic_name;
-
-	// published message
+	//! ROS messages to be publisher.
 	geometry_msgs::Twist twist_;
 	geometry_msgs::PointStamped closestPt_;
 
+
+	//! ROS topic name to subscribe to and queue size
+	std::string subscriberTopic_;
+	int subscriberQueuesize_;
 
 };
 

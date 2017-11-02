@@ -22,17 +22,23 @@ class MarkerPublish
 public:
 	MarkerPublish(ros::NodeHandle& nodeHandle): node_(nodeHandle), tf2Listener_(tf2Buffer_), target_frame_("odom"), tf2_filter_(point_sub_, tf2Buffer_, target_frame_, 10, 0)
 	{
-		ROS_INFO_STREAM("XXXXXXXXXXXXX Entered constructor XXXXXXXXXXXXXXXXX");
+		tf2Buffer_.setUsingDedicatedThread(true);
+
 		// publisher
-		marker_Visualization_pub = node_.advertise<visualization_msgs::Marker>("/vizMarker", 10);
-		// published message configuration
+		marker_Visualization_pub = node_.advertise<visualization_msgs::Marker>("vizMarker", 10);
+
+		// Default marker configuration
 		marker_msg.ns = "/";
 		marker_msg.type = visualization_msgs::Marker::SPHERE;
-		marker_msg.pose.position.z = 0;
 		marker_msg.color.a = 1.0;
 		marker_msg.color.g = 1.0;
+		marker_msg.scale.x = 1.0;
+		marker_msg.scale.y = 1.0;
+		marker_msg.scale.z = 1.0;
+
 		// subscribing
-		point_sub_.subscribe(node_, "/closestPoint", 10);
+		point_sub_.subscribe(node_, "closestPoint", 10);
+
 		// subscriber callback
 		tf2_filter_.registerCallback(boost::bind(&MarkerPublish::pointStampedCallback, this, _1));
 	}
@@ -40,18 +46,19 @@ public:
 	// callback to register with tf2_ros::MessageFilter to be called when transforms are available
 	void pointStampedCallback(const geometry_msgs::PointStamped::ConstPtr& laserBasePt_ptr)
 	{
+		// Transferred point is stored in this.
 		geometry_msgs::PointStamped OdomBasePt;
 
 		try {
 			ROS_DEBUG("Hello %s", "callback - entered");
 			tf2Buffer_.transform(*laserBasePt_ptr, OdomBasePt, target_frame_);
 
-			// marker
+			// Assign marker x,y coordinates.
 			marker_msg.header = laserBasePt_ptr->header;
 			marker_msg.pose.position.x = laserBasePt_ptr->point.x;
 			marker_msg.pose.position.y = laserBasePt_ptr->point.y;
 
-			// publish
+			// Publish marker message.
 			marker_Visualization_pub.publish(marker_msg);
 			ROS_DEBUG("Hello %s", "callback - exist");
 		}
@@ -81,10 +88,13 @@ private:
 int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "vizMarker");
+
 	ros::NodeHandle node("~");
+
 	husky_highlevel_controller::MarkerPublish marker_publish(node);
+
 	ros::spin();
+
 	return 0;
 };
-
 

@@ -13,10 +13,11 @@ Software License Agreement (BSD)
   
   <node name = "husky_highlevel_controller" pkg="husky_highlevel_controller" type="husky_highlevel_controller" output="screen" >
     <rosparam command = "load" file= "$(find husky_highlevel_controller)/param/parameters.yaml" />
-    <remap from="/husky_highlevel_controller/scan" to="/scan"/>
   </node>
   
-  <node name = "markerListener" pkg="husky_highlevel_controller" type="markerListener" output="screen" />
+  <node name = "markerListener" pkg="husky_highlevel_controller" type="markerListener" output="screen" >
+  	<remap from="/markerListener/closestPoint" to="/husky_highlevel_controller/closestPoint"/>
+  </node>
   
   <node name = "my_rviz" pkg="rviz" type="rviz" args = "-d $(find husky_highlevel_controller)/rvizConfig/config.rviz" />
   

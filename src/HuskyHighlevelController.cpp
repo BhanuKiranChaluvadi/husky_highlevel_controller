@@ -13,28 +13,38 @@ namespace husky_highlevel_controller {
 
 HuskyHighlevelController::HuskyHighlevelController(ros::NodeHandle& nodeHandle): nodeHandle_(nodeHandle)
 {
-	// Read parameters from the parameter file.
-	if (!nodeHandle_.getParam("/husky_highlevel_controller/scan_subscriber_queue_size", queue_size))  // lash has to be in the front
-		ROS_ERROR("Failed to get param 'scan_subscriber_queue_size'");
-
-	if (!nodeHandle_.getParam("/husky_highlevel_controller/scan_subscriber_topic_name", topic_name))
-		ROS_ERROR("Failed to get param 'scan_subscriber_topic_name'");
+	if (!readParameters()) {
+		ROS_ERROR("Could not read parameters.");
+		ros::requestShutdown();
+	}
 
 	// Elements in srv or msg definition are assigned zero values by the default
 	// no need to assign rest of the values as 0.0
 	twist_.linear.x = 2.0;
 
 	// initialize publishers and subscribers
-	subscriber_ = nodeHandle.subscribe(topic_name, queue_size, &HuskyHighlevelController::subscriberCallback, this);
+	subscriber_ = nodeHandle_.subscribe(subscriberTopic_, subscriberQueuesize_,
+												&HuskyHighlevelController::subscriberCallback, this);
 
-	publisher_ = nodeHandle.advertise <geometry_msgs::Twist> ("/cmd_vel", 10);
+	publisher_ = nodeHandle_.advertise <geometry_msgs::Twist> ("/cmd_vel", 10);
+
 	vis_pub = nodeHandle.advertise <geometry_msgs::PointStamped> ("closestPoint", 0 );
+
+	ROS_INFO("Successfully launched node.");
 
 }
 
 HuskyHighlevelController::~HuskyHighlevelController()
 {
 	// TODO Auto-generated destructor stub
+}
+
+bool HuskyHighlevelController::readParameters()
+{
+	if (!nodeHandle_.getParam("subscriber_queue_size", subscriberQueuesize_) ||
+			!nodeHandle_.getParam("subscriber_topic", subscriberTopic_))  return false;
+
+	return true;
 }
 
 void HuskyHighlevelController::subscriberCallback(const sensor_msgs::LaserScan::ConstPtr& laserScan)
