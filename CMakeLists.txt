@@ -120,10 +120,10 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/husky_highlevel_controller.cpp
-# )
+# Declare a C++ library
+ add_library(${PROJECT_NAME}_core
+   src/Controller.cpp
+ )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -133,8 +133,10 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(${PROJECT_NAME} src/${PROJECT_NAME}_node.cpp src/HuskyHighlevelController.cpp)
-
+ add_executable(${PROJECT_NAME} 
+				src/${PROJECT_NAME}_node.cpp 
+				src/HuskyHighlevelController.cpp
+)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -146,9 +148,14 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(${PROJECT_NAME}
-   ${catkin_LIBRARIES}
- )
+target_link_libraries(${PROJECT_NAME}_core
+  ${catkin_LIBRARIES}
+)
+ 
+target_link_libraries(${PROJECT_NAME}
+  ${PROJECT_NAME}_core
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

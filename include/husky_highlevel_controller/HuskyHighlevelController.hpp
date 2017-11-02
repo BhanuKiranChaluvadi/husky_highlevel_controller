@@ -7,11 +7,11 @@
 
 #pragma once
 
+#include "husky_highlevel_controller/Controller.h"
+
+//ROS
 #include <ros/ros.h>
-#include <string>
 #include <sensor_msgs/LaserScan.h>
-#include <geometry_msgs/Twist.h>
-#include <visualization_msgs/Marker.h>
 #include <std_srvs/SetBool.h>
 
 namespace husky_highlevel_controller {
@@ -47,7 +47,7 @@ private:
 	 * @param laserScan the received message.
 	 * subscribes to topic: laserScan data and publish to a topic: cmd_vel
 	 */
-	void subscriberCallback(const sensor_msgs::LaserScan::ConstPtr& laserScan);
+	void subscriberCallback(const sensor_msgs::LaserScan& laserScan);
 
 
 	/*!
@@ -83,12 +83,18 @@ private:
 	ros::Publisher vis_pub;
 
 	//! ROS messages to be publisher.
-	geometry_msgs::Twist twist_;
-	visualization_msgs::Marker marker_;
+//	geometry_msgs::Twist twist_;
+//	visualization_msgs::Marker marker_;
 
 	//! ROS topic name to subscribe to and queue size
 	std::string subscriberTopic_;
 	int subscriberQueuesize_;
+
+	//! HuskyController computation object.
+	Controller controller_;
+
+	//! Husky status - start/stop
+	bool status_ = true;
 };
 
 } /* name space husky_highlevel_controller */
